@@ -1,0 +1,408 @@
+#!/usr/bin/env bash
+
+version_number="1.0"
+
+
+select_gen() {
+  GEN=$(seq 1 "$1" |sed 's/^/Gen: /' | fzf --reverse --prompt="Select Gen: " | cut -d " " -f 2)
+}
+select_season() {
+  case $1 in
+    1)
+      SEA=$(printf "1 Pokémon: Indigo League\n2 Pokémon: Orange Island Adventures" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Indigo League\n2 Orange Island Adventures"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    2)
+      SEA=$(printf "1 Pokémon: The Johto Journeys\n2 Pokémon: Johto League Champions\n3 Pokémon: Master Quest" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 The Johto Journeys\n2 Johto League Champions\n3 Master Quest"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    3)
+      SEA=$(printf "1 Pokémon: Advanced\n2 Pokémon: Advanced Challenge\n3 Pokémon: Advanced Battle\n4 Pokémon: Battle Frontier" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Advanced\n2 Advanced Challenge\n3 Advanced Battle\n4 Battle Frontier"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    4)
+      SEA=$(printf "1 Pokémon: Diamond and Pearl\n2 Pokémon: DP Battle Dimension\n3 Pokémon: DP Galactic Battles\n4 Pokémon: DP Sinnoh League Victors" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Diamond and Pearl\n2 DP Battle Dimension\n3 DP Galactic Battles\n4 DP Sinnoh League Victors"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    5)
+      SEA=$(printf "1 Pokémon: Black & White\n2 Pokémon: BW Rival Destinies\n3 Pokémon: BW Adventures in Unova" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Black & White\n2 BW Rival Destinies\n3 BW Adventures in Unova"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    6)
+      SEA=$(printf "1 Pokémon: XY\n2 Pokémon: XY Kalos Quest\n3 Pokémon: XYZ" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 XY\n2 XY Kalos Quest\n3 XYZ"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    7)
+      SEA=$(printf "1 Pokémon: Sun & Moon\n2 Pokémon: Sun & Moon: Ultra Adventures\n3 Pokémon: Sun & Moon: Ultra Legends" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Sun & Moon\n2 Sun & Moon: Ultra Adventures\n3 Sun & Moon: Ultra Legends"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    8)
+      SEA=$(printf "1 Pokémon Journeys\n2 Pokémon Master Journeys\n3 Pokémon Ultimate Journeys" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Pokémon Journeys\n2 Pokémon Master Journeys\n3 Pokémon Ultimate Journeys" | grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+    9)
+      SEA=$(printf "1 Pokémon Horizons\n2 Pokémon Horizons: The Search for Laqua\n3 Pokémon Horizons: Rising Hope" | fzf --reverse --prompt="Select Season: " | cut -d " " -f 1)
+      TITLE=$(printf "1 Pokémon Horizons\n2 Pokémon Horizons: The Search for Laqua\n3 Pokémon Horizons: Rising Hope"| grep $SEA |cut -d " " -f 2- |sed 's/ /-/g' )
+      TITLE="0${SEA}-${TITLE,,}"
+      ;;
+  esac
+}
+
+select_ep() {
+  EP=$(seq 1 "$1" |sed 's/^/Ep: /' | fzf --reverse --prompt="Select Gen: " | cut -d " " -f 2)
+  if [ $EP -lt 10 ];then EP="0${EP}"; fi
+}
+
+
+resolution() {
+  RES=$(printf $1 |fzf --reverse --prompt="Select Video Quality: " | cut -d "p" -f 1 )
+}
+
+selecter() {
+  if [[ $1 != "res" ]]; then
+    select_gen 10
+  fi
+
+  case "$GEN" in
+    1)
+      if [[ $1 != "res" ]]; then
+        select_season 1
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]]; then
+            select_ep 82
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/01-indigo-league/${EP}/${EP}_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/01-indigo-league/${EP}/${EP}_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]]; then
+            select_ep 36
+          fi
+          resolution "360\n480"
+          VURL="https://v1.pkflx.com/hls/02-orange-islands/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/02-orange-islands/${EP}/audio_en.mp4"
+          ;;
+      esac
+      ;;
+    2)
+      if [[ $1 != "res" ]]; then
+        select_season 2
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]]; then
+            select_ep 41
+          fi
+          resolution "360\n480"
+          VURL="https://v1.pkflx.com/hls/03-johto-journeys/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/03-johto-journeys/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]]; then
+            select_ep 52
+          fi
+          resolution "360\n480"
+          VURL="https://v3.pkflx.com/hls/04-johto-league/${EP}/${EP}_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/04-johto-league/${EP}/${EP}_en-US.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]]; then
+            select_ep 65
+          fi
+          resolution "360\n480"
+          VURL="https://v3.pkflx.com/hls/05-master-quest/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/05-master-quest/${EP}/audio_en-US.mp4"
+          ;;
+      esac
+      ;;
+    3)
+      if [[ $1 != "res" ]]; then
+        select_season 3
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]]; then
+            select_ep 40
+          fi
+          resolution "360\n480"
+          VURL="https://v3.pkflx.com/hls/06-advanced/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/06-advanced/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]]; then
+            select_ep 52
+          fi
+          resolution "360\n480"
+          VURL="https://v3.pkflx.com/hls/07-advanced-challenge/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/07-advanced-challenge/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 52
+          fi
+          resolution "360\n480"
+          VURL="https://v3.pkflx.com/hls/08-advanced-battle/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/08-advanced-battle/${EP}/audio_en.mp4"
+          ;;
+        4)
+          if [[ $1 != "res" ]];then
+            select_ep 47
+          fi
+          resolution "360\n480"
+          VURL="https://v3.pkflx.com/hls/09-battle-frontier/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/09-battle-frontier/${EP}/audio_en.mp4"
+      esac
+      ;;
+    4)
+      if [[ $1 != "res" ]];then
+        select_season 4
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]]; then
+            select_ep 52
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v2.pkflx.com/hls/10-diamond-pearl/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v2.pkflx.com/hls/10-diamond-pearl/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]]; then
+            select_ep 52
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v1.pkflx.com/hls/11-dp-battle-dimension/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/11-dp-battle-dimension/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 53
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/12-dp-galactic-battles/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/12-dp-galactic-battles/${EP}/audio_en.mp4"
+          ;;
+        4)
+          if [[ $1 != "res" ]];then
+            select_ep 34
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/13-dp-sinnoh-league/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/13-dp-sinnoh-league/${EP}/audio_en.mp4"
+          ;;
+      esac
+      ;;
+    5)
+      if [[ $1 != "res" ]];then
+        select_season 5
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]];then
+            select_ep 48
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v2.pkflx.com/hls/14-black-white/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v2.pkflx.com/hls/14-black-white/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]];then
+            select_ep 49
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v1.pkflx.com/hls/15-bw-rival-destinies/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/15-bw-rival-destinies/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 45
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/16-bw-adventures-in-unova/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/16-bw-adventures-in-unova/${EP}/audio_en.mp4"
+          ;;
+      esac
+      ;;
+    6)
+      if [[ $1 != "res" ]];then
+        select_season 6
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]];then
+            select_ep 48
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/17-xy/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/17-xy/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]];then
+            select_ep 45
+          fi
+          resolution ""
+          VURL="https://v3.pkflx.com/hls/18-xy-kalos-quest/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/18-xy-kalos-quest/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 48
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v1.pkflx.com/hls/19-xyz/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/19-xyz/${EP}/audio_en.mp4"
+          ;;
+      esac
+      ;;
+    7)
+      if [[ $1 != "res" ]];then
+        select_season 7
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]];then
+            select_ep 82
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v2.pkflx.com/hls/20-sun-moon/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v2.pkflx.com/hls/20-sun-moon/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]];then
+            select_ep 36
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v2.pkflx.com/hls/21-sun-moon-ultra-adventures/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v2.pkflx.com/hls/21-sun-moon-ultra-adventures/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 54
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v1.pkflx.com/hls/22-sun-moon-ultra-legends/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/22-sun-moon-ultra-legends/${EP}/audio_en.mp4"
+          ;;
+      esac
+      ;;
+    8)
+      if [[ $1 != "res" ]];then
+        select_season 8
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]];then
+            select_ep 48
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v2.pkflx.com/hls/23-journeys/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v2.pkflx.com/hls/23-journeys/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]];then
+            select_ep 42
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/24-master-journeys/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/24-master-journeys/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 53
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v2.pkflx.com/hls/25-ultimate-journeys/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v2.pkflx.com/hls/25-ultimate-journeys/${EP}/audio_en.mp4"
+          ;;
+      esac
+      ;;
+    9)
+      if [[ $1 != "res" ]];then
+        select_season 9
+      fi
+      case "$SEA" in
+        1)
+          if [[ $1 != "res" ]];then
+            select_ep 45
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v1.pkflx.com/hls/26-horizons/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/26-horizons/${EP}/audio_en.mp4"
+          ;;
+        2)
+          if [[ $1 != "res" ]];then
+            select_ep 44
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v3.pkflx.com/hls/27-horizons-search-for-laqua/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v3.pkflx.com/hls/27-horizons-search-for-laqua/${EP}/audio_en.mp4"
+          ;;
+        3)
+          if [[ $1 != "res" ]];then
+            select_ep 25
+          fi
+          resolution "360\n720\n1080"
+          VURL="https://v1.pkflx.com/hls/28-horizons-rising-hope/${EP}/video_h264_${RES}p.mp4"
+          AURL="https://v1.pkflx.com/hls/28-horizons-rising-hope/${EP}/audio_en.mp4"
+      esac
+      ;;
+  esac
+
+}
+
+inc() { printf "%02d\n" $((10#$1 + 1)); }
+dec() { printf "%02d\n" $((10#$1 - 1)); }
+
+play() {
+  mpv "${VURL}" --audio-file="${AURL}" || AURL=$(echo $AURL | sed 's/_en/_jp/') mpv "${VURL}" --audio-file="${AURL}"
+
+  OPT=$(printf "next\nreplay\nprevious\nselect\nresolution\nquit" | fzf --reverse --prompt="Options: ")
+
+  case "$OPT" in
+    "next")
+      inc $EP
+      play
+      ;;
+    "replay")
+      play
+      ;;
+    "previous")
+      dec $EP
+      play
+      ;;
+    "select")
+      selecter
+      play
+      ;;
+    "resolution")
+      selecter res
+      play
+      ;;
+    "quit")
+      echo "exiting."
+      exit 0
+      ;;
+  esac
+}
+
+main() {
+  selecter
+  play
+}
+
+main
+echo $GEN $SEA $EP $RES $TITLE
+
+exit
+https://v1.pkflx.com/hls/02-orange-islands/01/video_h264_480p.mp4
