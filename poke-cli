@@ -67,18 +67,18 @@ resolution() {
 }
 
 selecter() {
-  if [[ $1 != "res" ]]; then
+  if [[ $1 != "res" && $1 != "mov" ]]; then
     select_gen 10
   fi
 
   case "$GEN" in
     1)
-      if [[ $1 != "res" ]]; then
+      if [[ $1 != "res" && $1 != "mov" ]]; then
         select_season 1
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 82
           fi
           resolution "360\n720\n1080"
@@ -86,7 +86,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/01-indigo-league/${EP}/${EP}_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 36
           fi
           resolution "360\n480"
@@ -96,12 +96,12 @@ selecter() {
       esac
       ;;
     2)
-      if [[ $1 != "res" ]]; then
+      if [[ $1 != "res"  && $1 != "mov" ]]; then
         select_season 2
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 41
           fi
           resolution "360\n480"
@@ -109,7 +109,7 @@ selecter() {
           AURL="https://v1.pkflx.com/hls/03-johto-journeys/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 52
           fi
           resolution "360\n480"
@@ -117,7 +117,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/04-johto-league/${EP}/${EP}_en-US.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 65
           fi
           resolution "360\n480"
@@ -127,12 +127,12 @@ selecter() {
       esac
       ;;
     3)
-      if [[ $1 != "res" ]]; then
+      if [[ $1 != "res"  && $1 != "mov" ]]; then
         select_season 3
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 40
           fi
           resolution "360\n480"
@@ -140,7 +140,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/06-advanced/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 52
           fi
           resolution "360\n480"
@@ -148,7 +148,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/07-advanced-challenge/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 52
           fi
           resolution "360\n480"
@@ -156,7 +156,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/08-advanced-battle/${EP}/audio_en.mp4"
           ;;
         4)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 47
           fi
           resolution "360\n480"
@@ -165,12 +165,12 @@ selecter() {
       esac
       ;;
     4)
-      if [[ $1 != "res" ]];then
+      if [[ $1 != "res"  && $1 != "mov" ]];then
         select_season 4
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 52
           fi
           resolution "360\n720\n1080"
@@ -178,7 +178,7 @@ selecter() {
           AURL="https://v2.pkflx.com/hls/10-diamond-pearl/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" ]]; then
             select_ep 52
           fi
           resolution "360\n720\n1080"
@@ -186,7 +186,7 @@ selecter() {
           AURL="https://v1.pkflx.com/hls/11-dp-battle-dimension/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 53
           fi
           resolution "360\n720\n1080"
@@ -194,7 +194,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/12-dp-galactic-battles/${EP}/audio_en.mp4"
           ;;
         4)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 34
           fi
           resolution "360\n720\n1080"
@@ -204,12 +204,12 @@ selecter() {
       esac
       ;;
     5)
-      if [[ $1 != "res" ]];then
+      if [[ $1 != "res"  && $1 != "mov" ]];then
         select_season 5
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
@@ -217,7 +217,7 @@ selecter() {
           AURL="https://v2.pkflx.com/hls/14-black-white/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 49
           fi
           resolution "360\n720\n1080"
@@ -225,7 +225,7 @@ selecter() {
           AURL="https://v1.pkflx.com/hls/15-bw-rival-destinies/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 45
           fi
           resolution "360\n720\n1080"
@@ -235,12 +235,12 @@ selecter() {
       esac
       ;;
     6)
-      if [[ $1 != "res" ]];then
+      if [[ $1 != "res"  && $1 != "mov" ]];then
         select_season 6
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
@@ -248,7 +248,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/17-xy/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 45
           fi
           resolution ""
@@ -256,7 +256,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/18-xy-kalos-quest/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
@@ -266,12 +266,12 @@ selecter() {
       esac
       ;;
     7)
-      if [[ $1 != "res" ]];then
+      if [[ $1 != "res"  && $1 != "mov" ]];then
         select_season 7
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 82
           fi
           resolution "360\n720\n1080"
@@ -279,7 +279,7 @@ selecter() {
           AURL="https://v2.pkflx.com/hls/20-sun-moon/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 36
           fi
           resolution "360\n720\n1080"
@@ -287,7 +287,7 @@ selecter() {
           AURL="https://v2.pkflx.com/hls/21-sun-moon-ultra-adventures/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 54
           fi
           resolution "360\n720\n1080"
@@ -297,12 +297,12 @@ selecter() {
       esac
       ;;
     8)
-      if [[ $1 != "res" ]];then
+      if [[ $1 != "res"  && $1 != "mov" ]];then
         select_season 8
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
@@ -310,7 +310,7 @@ selecter() {
           AURL="https://v2.pkflx.com/hls/23-journeys/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 42
           fi
           resolution "360\n720\n1080"
@@ -318,7 +318,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/24-master-journeys/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 53
           fi
           resolution "360\n720\n1080"
@@ -328,12 +328,12 @@ selecter() {
       esac
       ;;
     9)
-      if [[ $1 != "res" ]];then
+      if [[ $1 != "res"  && $1 != "mov" ]];then
         select_season 9
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 45
           fi
           resolution "360\n720\n1080"
@@ -341,7 +341,7 @@ selecter() {
           AURL="https://v1.pkflx.com/hls/26-horizons/${EP}/audio_en.mp4"
           ;;
         2)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 44
           fi
           resolution "360\n720\n1080"
@@ -349,7 +349,7 @@ selecter() {
           AURL="https://v3.pkflx.com/hls/27-horizons-search-for-laqua/${EP}/audio_en.mp4"
           ;;
         3)
-          if [[ $1 != "res" ]];then
+          if [[ $1 != "res"  && $1 != "mov" ]];then
             select_ep 25
           fi
           resolution "360\n720\n1080"
@@ -363,22 +363,35 @@ selecter() {
 
 inc() { printf "%02d\n" $((10#$1 + 1)); }
 dec() { printf "%02d\n" $((10#$1 - 1)); }
+check_audio() {
+  curl -sfI "$1" >/dev/null
+}
 
 play() {
-  mpv "${VURL}" --audio-file="${AURL}" || AURL=$(echo $AURL | sed 's/_en/_jp/') mpv "${VURL}" --audio-file="${AURL}"
+  # mpv "${VURL}" --audio-file="${AURL}" && AURL=$(echo $AURL | sed 's/_en/_jp/') mpv "${VURL}" --audio-file="${AURL}"
+  if check_audio "$AURL"; then
+    mpv "$VURL" --audio-file="$AURL"
+  else
+    AURL=${AURL/_en/_jp}
+    mpv "$VURL" --audio-file="$AURL"
+  fi
 
   OPT=$(printf "next\nreplay\nprevious\nselect\nresolution\nquit" | fzf --reverse --prompt="Options: ")
 
+  echo "${GEN},${SEA},${EP}" >.hst
+
   case "$OPT" in
     "next")
-      inc $EP
+      EP=$(inc $EP)
+      selecter mov
       play
       ;;
     "replay")
       play
       ;;
     "previous")
-      dec $EP
+      EP=$(dec $EP)
+      selecter mov
       play
       ;;
     "select")
@@ -397,12 +410,20 @@ play() {
 }
 
 main() {
-  selecter
+  if [[ -f .hst ]]; then
+    read -r  -p "history file found! play from last episode? Y/n: " ch
+    if [[ "${ch,,}" == "y" || -z "$ch" ]];then
+      IFS=',' read -r GEN SEA EP < .hst
+    fi
+  fi
+
+  if [[ -z "$GEN" || -z "$SEA" || -z "$EP" ]]; then
+    selecter
+  else
+    selecter res
+  fi
+
   play
 }
 
 main
-echo $GEN $SEA $EP $RES $TITLE
-
-exit
-https://v1.pkflx.com/hls/02-orange-islands/01/video_h264_480p.mp4
