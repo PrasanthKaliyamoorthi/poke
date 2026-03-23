@@ -363,22 +363,13 @@ selecter() {
 
 inc() { printf "%02d\n" $((10#$1 + 1)); }
 dec() { printf "%02d\n" $((10#$1 - 1)); }
-check_audio() {
-  curl -sfI "$1" >/dev/null
-}
 
 play() {
-  # mpv "${VURL}" --audio-file="${AURL}" && AURL=$(echo $AURL | sed 's/_en/_jp/') mpv "${VURL}" --audio-file="${AURL}"
-  if check_audio "$AURL"; then
-    mpv "$VURL" --audio-file="$AURL"
-  else
-    AURL=${AURL/_en/_jp}
-    mpv "$VURL" --audio-file="$AURL"
-  fi
-
-  OPT=$(printf "next\nreplay\nprevious\nselect\nresolution\nquit" | fzf --reverse --prompt="Options: ")
+  (mpv "$VURL" --audio-file="$AURL" >/dev/null 2>.er &) || (echo "$GEN,$SEA,$EP" >.hst && exit)
 
   echo "${GEN},${SEA},${EP}" >.hst
+
+  OPT=$(printf "next\nreplay\nprevious\nselect\nresolution\nquit" | fzf --reverse --prompt="playing $VURL Options: ")
 
   case "$OPT" in
     "next")
