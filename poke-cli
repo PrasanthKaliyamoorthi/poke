@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-version_number="1.0"
-
+version_number="2.0"
+MIRROR="v3";
 
 select_gen() {
   GEN=$(seq 1 "$1" |sed 's/^/Gen: /' | fzf --reverse --prompt="Select Gen: " | cut -d " " -f 2)
@@ -61,300 +61,279 @@ select_ep() {
   if [ $EP -lt 10 ];then EP="0${EP}"; fi
 }
 
+select_mirror() {
+  MIRROR=$(printf "v1\nv2\nv3\n" |fzf --reverse --prompt="Select Mirror: " |cut -d " " -f2)
+}
 
 resolution() {
   RES=$(printf $1 |fzf --reverse --prompt="Select Video Quality: " | cut -d "p" -f 1 )
 }
 
 selecter() {
-  if [[ $1 != "res" && $1 != "mov" ]]; then
+  if [[ $1 != "res" && $1 != "mov" && $1 != "vs" ]]; then
     select_gen 10
+  fi
+
+  if [[ $1 == "vs" ]]; then
+    select_mirror
   fi
 
   case "$GEN" in
     1)
-      if [[ $1 != "res" && $1 != "mov" ]]; then
+      if [[ $1 != "res" && $1 != "mov"  && $1 != "vs" ]]; then
         select_season 1
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov"  && $1 != "vs" ]]; then
             select_ep 82
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/01-indigo-league/${EP}/${EP}_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/01-indigo-league/${EP}/${EP}_en.mp4"
+          NAME="01-indigo-league"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 36
           fi
           resolution "360\n480"
-          VURL="https://v1.pkflx.com/hls/02-orange-islands/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/02-orange-islands/${EP}/audio_en.mp4"
+          NAME="02-orange-islands"
           ;;
       esac
       ;;
     2)
-      if [[ $1 != "res"  && $1 != "mov" ]]; then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
         select_season 2
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 41
           fi
           resolution "360\n480"
-          VURL="https://v1.pkflx.com/hls/03-johto-journeys/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/03-johto-journeys/${EP}/audio_en.mp4"
+          NAME="03-johto-journeys"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 52
           fi
           resolution "360\n480"
-          VURL="https://v3.pkflx.com/hls/04-johto-league/${EP}/${EP}_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/04-johto-league/${EP}/${EP}_en-US.mp4"
+          NAME="04-johto-league"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 65
           fi
           resolution "360\n480"
-          VURL="https://v3.pkflx.com/hls/05-master-quest/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/05-master-quest/${EP}/audio_en-US.mp4"
+          NAME="05-master-quest"
           ;;
       esac
       ;;
     3)
-      if [[ $1 != "res"  && $1 != "mov" ]]; then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
         select_season 3
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 40
           fi
           resolution "360\n480"
-          VURL="https://v3.pkflx.com/hls/06-advanced/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/06-advanced/${EP}/audio_en.mp4"
+          NAME="06-advanced"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 52
           fi
           resolution "360\n480"
-          VURL="https://v3.pkflx.com/hls/07-advanced-challenge/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/07-advanced-challenge/${EP}/audio_en.mp4"
+          NAME="07-advanced-challenge"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 52
           fi
           resolution "360\n480"
-          VURL="https://v3.pkflx.com/hls/08-advanced-battle/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/08-advanced-battle/${EP}/audio_en.mp4"
+          NAME="08-advanced-battle"
           ;;
         4)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 47
           fi
           resolution "360\n480"
-          VURL="https://v3.pkflx.com/hls/09-battle-frontier/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/09-battle-frontier/${EP}/audio_en.mp4"
+          NAME="09-battle-frontier"
       esac
       ;;
     4)
-      if [[ $1 != "res"  && $1 != "mov" ]];then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
         select_season 4
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 52
           fi
           resolution "360\n720\n1080"
-          VURL="https://v2.pkflx.com/hls/10-diamond-pearl/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v2.pkflx.com/hls/10-diamond-pearl/${EP}/audio_en.mp4"
+          NAME="10-diamond-pearl"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]]; then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]]; then
             select_ep 52
           fi
           resolution "360\n720\n1080"
-          VURL="https://v1.pkflx.com/hls/11-dp-battle-dimension/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/11-dp-battle-dimension/${EP}/audio_en.mp4"
+          NAME="11-dp-battle-dimension"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 53
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/12-dp-galactic-battles/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/12-dp-galactic-battles/${EP}/audio_en.mp4"
+          NAME="12-dp-galactic-battles"
           ;;
         4)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 34
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/13-dp-sinnoh-league/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/13-dp-sinnoh-league/${EP}/audio_en.mp4"
+          NAME="13-dp-sinnoh-league"
           ;;
       esac
       ;;
     5)
-      if [[ $1 != "res"  && $1 != "mov" ]];then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
         select_season 5
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
-          VURL="https://v2.pkflx.com/hls/14-black-white/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v2.pkflx.com/hls/14-black-white/${EP}/audio_en.mp4"
+          NAME="14-black-white"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 49
           fi
           resolution "360\n720\n1080"
-          VURL="https://v1.pkflx.com/hls/15-bw-rival-destinies/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/15-bw-rival-destinies/${EP}/audio_en.mp4"
+          NAME="15-bw-rival-destinies"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 45
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/16-bw-adventures-in-unova/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/16-bw-adventures-in-unova/${EP}/audio_en.mp4"
+          NAME="16-bw-adventures-in-unova"
           ;;
       esac
       ;;
     6)
-      if [[ $1 != "res"  && $1 != "mov" ]];then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
         select_season 6
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/17-xy/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/17-xy/${EP}/audio_en.mp4"
+          NAME="17-xy"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 45
           fi
-          resolution ""
-          VURL="https://v3.pkflx.com/hls/18-xy-kalos-quest/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/18-xy-kalos-quest/${EP}/audio_en.mp4"
+          resolution "360\n720\n1080"
+          NAME="18-xy-kalos-quest"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
-          VURL="https://v1.pkflx.com/hls/19-xyz/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/19-xyz/${EP}/audio_en.mp4"
+          NAME="19-xyz"
           ;;
       esac
       ;;
     7)
-      if [[ $1 != "res"  && $1 != "mov" ]];then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
         select_season 7
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 82
           fi
           resolution "360\n720\n1080"
-          VURL="https://v2.pkflx.com/hls/20-sun-moon/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v2.pkflx.com/hls/20-sun-moon/${EP}/audio_en.mp4"
+          NAME="20-sun-moon"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 36
           fi
           resolution "360\n720\n1080"
-          VURL="https://v2.pkflx.com/hls/21-sun-moon-ultra-adventures/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v2.pkflx.com/hls/21-sun-moon-ultra-adventures/${EP}/audio_en.mp4"
+          NAME="21-sun-moon-ultra-adventures"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 54
           fi
           resolution "360\n720\n1080"
-          VURL="https://v1.pkflx.com/hls/22-sun-moon-ultra-legends/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/22-sun-moon-ultra-legends/${EP}/audio_en.mp4"
+          NAME="22-sun-moon-ultra-legends"
           ;;
       esac
       ;;
     8)
-      if [[ $1 != "res"  && $1 != "mov" ]];then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
         select_season 8
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 48
           fi
           resolution "360\n720\n1080"
-          VURL="https://v2.pkflx.com/hls/23-journeys/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v2.pkflx.com/hls/23-journeys/${EP}/audio_en.mp4"
+          NAME="23-journeys"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 42
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/24-master-journeys/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/24-master-journeys/${EP}/audio_en.mp4"
+          NAME="24-master-journeys"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 53
           fi
           resolution "360\n720\n1080"
-          VURL="https://v2.pkflx.com/hls/25-ultimate-journeys/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v2.pkflx.com/hls/25-ultimate-journeys/${EP}/audio_en.mp4"
+          NAME="25-ultimate-journeys"
           ;;
       esac
       ;;
     9)
-      if [[ $1 != "res"  && $1 != "mov" ]];then
+      if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
         select_season 9
       fi
       case "$SEA" in
         1)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 45
           fi
           resolution "360\n720\n1080"
-          VURL="https://v1.pkflx.com/hls/26-horizons/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/26-horizons/${EP}/audio_en.mp4"
+          NAME="26-horizons"
           ;;
         2)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 44
           fi
           resolution "360\n720\n1080"
-          VURL="https://v3.pkflx.com/hls/27-horizons-search-for-laqua/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v3.pkflx.com/hls/27-horizons-search-for-laqua/${EP}/audio_en.mp4"
+          NAME="27-horizons-search-for-laqua"
           ;;
         3)
-          if [[ $1 != "res"  && $1 != "mov" ]];then
+          if [[ $1 != "res"  && $1 != "mov" && $1 != "vs"  ]];then
             select_ep 25
           fi
           resolution "360\n720\n1080"
-          VURL="https://v1.pkflx.com/hls/28-horizons-rising-hope/${EP}/video_h264_${RES}p.mp4"
-          AURL="https://v1.pkflx.com/hls/28-horizons-rising-hope/${EP}/audio_en.mp4"
+          NAME="28-horizons-rising-hope"
       esac
       ;;
   esac
@@ -364,12 +343,33 @@ selecter() {
 inc() { printf "%02d\n" $((10#$1 + 1)); }
 dec() { printf "%02d\n" $((10#$1 - 1)); }
 
+video_exists() {
+    curl -sfI --max-time 5 "$1" >/dev/null
+}
+
 play() {
-  (mpv "$VURL" --audio-file="$AURL" >/dev/null 2>.er &) || (echo "$GEN,$SEA,$EP" >.hst && exit)
+
+URL1="https://${MIRROR}.pkflx.com/hls/${NAME}/${EP}/video_h264_${RES}p.mp4"
+URL2="https://${MIRROR}.pkflx.com/hls/${NAME}/${EP}/${EP}_${RES}p.mp4"
+
+if video_exists "$URL1"; then
+    VURL="$URL1"
+elif video_exists "$URL2"; then
+    VURL="$URL2"
+else
+    echo "No video found"
+    return 1
+fi
+
+  (mpv "$VURL" \
+            --audio-file="https://${MIRROR}.pkflx.com/hls/${NAME}/${EP}/audio_en-US.mp4" \
+            --audio-file="https://${MIRROR}.pkflx.com/hls/${NAME}/${EP}/${EP}_en-US.mp4" \
+            --audio-file="https://${MIRROR}.pkflx.com/hls/${NAME}/${EP}/audio_en.mp4" \
+            --audio-file="https://${MIRROR}.pkflx.com/hls/${NAME}/${EP}/audio_jp.mp4"   >.ot 2>.er &) || (echo "$GEN,$SEA,$EP" >.hst && exit)
 
   echo "${GEN},${SEA},${EP}" >.hst
 
-  OPT=$(printf "next\nreplay\nprevious\nselect\nresolution\nquit" | fzf --reverse --prompt="playing $VURL Options: ")
+  OPT=$(printf "next\nreplay\nprevious\nselect\nmirror\nresolution\nquit" | fzf --reverse --prompt="playing $VURL Options: ")
 
   case "$OPT" in
     "next")
@@ -389,6 +389,10 @@ play() {
       selecter
       play
       ;;
+    "mirror")
+      selecter vs
+      play
+      ;;
     "resolution")
       selecter res
       play
@@ -401,6 +405,7 @@ play() {
 }
 
 main() {
+
   if [[ -f .hst ]]; then
     read -r  -p "history file found! play from last episode? Y/n: " ch
     if [[ "${ch,,}" == "y" || -z "$ch" ]];then
