@@ -1,0 +1,209 @@
+#!/usr/bin/env bash
+#
+# poke-cli-v3 — browse and stream Pokémon episodes (fzf + mpv)
+#
+# Dependencies: bash >= 4, curl, fzf, mpv
+
+set -u
+
+readonly VERSION="3.0"
+readonly DEFAULT_MIRROR="v3"
+readonly HIST_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/poke-cli/history"
+
+# One entry per season: gen|season|url-slug|episodes|qualities|title
+readonly DATA=(
+  "1|1|01-indigo-league|82|360 720 1080|Indigo League"
+  "1|2|02-orange-islands|36|360 480|Orange Island Adventures"
+  "2|1|03-johto-journeys|41|360 480|The Johto Journeys"
+  "2|2|04-johto-league|52|360 480|Johto League Champions"
+  "2|3|05-master-quest|65|360 480|Master Quest"
+  "3|1|06-advanced|40|360 480|Advanced"
+  "3|2|07-advanced-challenge|52|360 480|Advanced Challenge"
+  "3|3|08-advanced-battle|52|360 480|Advanced Battle"
+  "3|4|09-battle-frontier|47|360 480|Battle Frontier"
+  "4|1|10-diamond-pearl|52|360 720 1080|Diamond and Pearl"
+  "4|2|11-dp-battle-dimension|52|360 720 1080|DP Battle Dimension"
+  "4|3|12-dp-galactic-battles|53|360 720 1080|DP Galactic Battles"
+  "4|4|13-dp-sinnoh-league|34|360 720 1080|DP Sinnoh League Victors"
+  "5|1|14-black-white|48|360 720 1080|Black & White"
+  "5|2|15-bw-rival-destinies|49|360 720 1080|BW Rival Destinies"
+  "5|3|16-bw-adventures-in-unova|45|360 720 1080|BW Adventures in Unova"
+  "6|1|17-xy|48|360 720 1080|XY"
+  "6|2|18-xy-kalos-quest|45|360 720 1080|XY Kalos Quest"
+  "6|3|19-xyz|48|360 720 1080|XYZ"
+  "7|1|20-sun-moon|82|360 720 1080|Sun & Moon"
+  "7|2|21-sun-moon-ultra-adventures|36|360 720 1080|Sun & Moon: Ultra Adventures"
+  "7|3|22-sun-moon-ultra-legends|54|360 720 1080|Sun & Moon: Ultra Legends"
+  "8|1|23-journeys|48|360 720 1080|Journeys"
+  "8|2|24-master-journeys|42|360 720 1080|Master Journeys"
+  "8|3|25-ultimate-journeys|53|360 720 1080|Ultimate Journeys"
+  "9|1|26-horizons|45|360 720 1080|Horizons"
+  "9|2|27-horizons-search-for-laqua|44|360 720 1080|Horizons: The Search for Laqua"
+  "9|3|28-horizons-rising-hope|25|360 720 1080|Horizons: Rising Hope"
+)
+
+GEN="" SEA="" EP="" RES="" MIRROR=""
+SLUG="" EPS="" QUALITIES="" TITLE=""
+
+die() { printf '%s: %s\n' "${0##*/}" "$*" >&2; exit 1; }
+
+for dep in curl fzf mpv; do
+  command -v "$dep" >/dev/null 2>&1 || die "'$dep' is required but not installed"
+done
+
+pad2() { printf '%02d' "$1"; }
+
+pick_one() { # pick_one <prompt> <candidate...>
+  local p=$1; shift
+  printf '%s\n' "$@" | fzf --reverse --prompt="$p"
+}
+
+apply_season() { # resolve SLUG/EPS/QUALITIES/TITLE from GEN+SEA
+  local row g s
+  for row in "${DATA[@]}"; do
+    IFS='|' read -r g s _ <<<"$row"
+    [[ "$g" == "$GEN" && "$s" == "$SEA" ]] || continue
+    IFS='|' read -r GEN SEA SLUG EPS QUALITIES TITLE <<<"$row"
+    return 0
+  done
+  return 1
+}
+
+choose_gen() {
+  GEN=$(pick_one 'Generation: ' {1..9}) || die "cancelled"
+  SEA=""
+  choose_season
+}
+
+choose_season() {
+  local row g s t lines="" out
+  for row in "${DATA[@]}"; do
+    IFS='|' read -r g s _ _ _ t <<<"$row"
+    [[ "$g" == "$GEN" ]] && lines+="$s) $t"$'\n'
+  done
+  out=$(printf '%s' "$lines" | fzf --reverse --prompt='Season: ') || die "cancelled"
+  SEA="${out%%)*}"
+  apply_season || die "internal error: unknown season gen=$GEN sea=$SEA"
+}
+
+choose_episode() {
+  local out
+  out=$(seq 1 "$EPS" | fzf --reverse --prompt="Episode (1-$EPS): ") || die "cancelled"
+  EP=$(pad2 "$out")
+}
+
+choose_quality() {
+  local out
+  out=$(printf '%sp\n' $QUALITIES | fzf --reverse --prompt='Quality: ') || die "cancelled"
+  RES="${out%p}"
+}
+
+ensure_quality() { # re-prompt only if current quality unsupported by season
+  [[ -n "$RES" && " $QUALITIES " == *" $RES "* ]] || choose_quality
+}
+
+choose_mirror() {
+  MIRROR=$(pick_one 'Mirror: ' v1 v2 v3) || die "cancelled"
+}
+
+shift_episode() { # shift_episode <+1|-1>; refuses to leave season bounds
+  local n=$((10#$EP + $1))
+  ((n >= 1 && n <= EPS)) || { echo "Reached end of season." >&2; return 1; }
+  EP=$(pad2 "$n")
+}
+
+import_legacy_history() { # adopt old ./.hst once, then ignore it
+  [[ -f .hst && ! -f $HIST_FILE ]] || return 0
+  mkdir -p "${HIST_FILE%/*}" 2>/dev/null && cp .hst "$HIST_FILE" 2>/dev/null
+}
+
+try_resume() {
+  [[ -f $HIST_FILE ]] || return 1
+  local reply g s e
+  read -r -p "Resume last episode? [Y/n] " reply || return 1
+  [[ "${reply,,}" == n* ]] && return 1
+  IFS=',' read -r g s e _ <"$HIST_FILE" || return 1
+  GEN=$g SEA=$s EP=$e
+  apply_season || { echo "Stale history — starting over." >&2; GEN=""; return 1; }
+  [[ -n "$EP" ]]
+}
+
+save_history() {
+  mkdir -p "${HIST_FILE%/*}" 2>/dev/null
+  printf '%s,%s,%s\n' "$GEN" "$SEA" "$EP" >"$HIST_FILE" 2>/dev/null
+}
+
+episode_url() { # probe known URL layouts, echo the first that exists
+  local base u
+  base="https://${MIRROR}.pkflx.com/hls/${SLUG}/${EP}"
+  for u in "$base/video_h264_${RES}p.mp4" "$base/${EP}_${RES}p.mp4"; do
+    curl -sfI --max-time 5 "$u" >/dev/null && { printf '%s\n' "$u"; return 0; }
+  done
+  return 1
+}
+
+play_current() {
+  local url base
+  url=$(episode_url) || {
+    echo "No stream found: $TITLE E$EP @ ${RES}p (mirror $MIRROR)." >&2
+    return 1
+  }
+  base="https://${MIRROR}.pkflx.com/hls/${SLUG}/${EP}"
+  mpv "$url" \
+    --force-media-title="$TITLE — Episode $EP" \
+    --audio-file="$base/audio_en-US.mp4" \
+    --audio-file="$base/${EP}_en-US.mp4" \
+    --audio-file="$base/audio_en.mp4" \
+    --audio-file="$base/audio_jp.mp4" \
+    >/dev/null 2>&1 &
+  disown
+  save_history
+}
+
+usage() {
+  cat <<EOF
+usage: ${0##*/} [-h] [-V]
+
+Interactive Pokémon stream browser (fzf + mpv).
+  -h, --help     show this help
+  -V, --version  show version
+EOF
+}
+
+main() {
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -h|--help) usage; exit 0 ;;
+      -V|--version) echo "${0##*/} $VERSION"; exit 0 ;;
+      *) die "unknown option: $1 (see --help)" ;;
+    esac
+  done
+
+  import_legacy_history
+  try_resume || true
+
+  [[ -n "$GEN" ]] || choose_gen
+  [[ -n "$SEA" ]] || choose_season
+  [[ -n "$EP" ]] || choose_episode
+  MIRROR=${MIRROR:-$DEFAULT_MIRROR}
+  ensure_quality
+
+  local opt
+  while true; do
+    play_current || true
+    opt=$(printf '%s\n' next replay previous select mirror quality quit |
+          fzf --reverse --prompt="[$TITLE · E$EP · ${RES}p · $MIRROR] ") ||
+          exit 0
+    case $opt in
+      next)     shift_episode 1 || continue ;;
+      previous) shift_episode -1 || continue ;;
+      replay)   : ;;
+      select)   choose_gen; choose_episode; ensure_quality ;;
+      mirror)   choose_mirror ;;
+      quality)  choose_quality ;;
+      quit)     exit 0 ;;
+    esac
+  done
+}
+
+main "$@"
